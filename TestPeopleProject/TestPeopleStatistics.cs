@@ -1,73 +1,84 @@
 using PeopleProject;
 
-
-
+[TestFixture]
 public class TestPersonStatistics
 {
-    private List<Person> GetSamplePeople()
+    private List<Person> peopleList1;
+    private List<Person> peopleList2;
+
+    [SetUp]
+    public void Setup()
     {
-        return new List<Person>
+        peopleList1 = new List<Person>
         {
-            new Person(1, "Anna", 20, true, 85),
-            new Person(2, "Béla", 25, false, 30),
-            new Person(3, "Cecil", 19, true, 40),
-            new Person(4, "Dénes", 30, false, 95),
-            new Person(5, "Emma", 22, true, 60)
+            new Person(1, "Anna", 20, true, 80),
+            new Person(2, "Bela", 30, false, 50)
+        };
+
+        peopleList2 = new List<Person>
+        {
+            new Person(3, "Cecil", 40, true, 90),
+            new Person(4, "Dani", 60, true, 30)
         };
     }
 
     [Test]
-    public void TestAverageAge()
+    public void GetAverageAge_TwoDifferentLists()
     {
-        var stats = new PersonStatistics(GetSamplePeople());
-        Assert.AreEqual(23.2, stats.GetAverageAge(), 0.1);
+        var stats = new PersonStatistics(peopleList1);
+        Assert.That(stats.GetAverageAge(), Is.EqualTo(25));
+
+        stats.People = peopleList2;
+        Assert.That(stats.GetAverageAge(), Is.EqualTo(50));
     }
 
     [Test]
-    public void TestNumberOfStudents()
+    public void GetNumberOfStudents_TwoDifferentLists()
     {
-        var stats = new PersonStatistics(GetSamplePeople());
-        Assert.AreEqual(3, stats.GetNumberOfStudents());
+        var stats = new PersonStatistics(peopleList1);
+        Assert.That(stats.GetNumberOfStudents(), Is.EqualTo(1));
+
+        stats.People = peopleList2;
+        Assert.That(stats.GetNumberOfStudents(), Is.EqualTo(2));
     }
 
     [Test]
-    public void TestHighestScore()
+    public void GetPersonWithHighestScore_TwoDifferentLists()
     {
-        var stats = new PersonStatistics(GetSamplePeople());
-        Assert.AreEqual("Dénes", stats.GetPersonWithHighestScore().Name);
+        var stats = new PersonStatistics(peopleList1);
+        Assert.That(stats.GetPersonWithHighestScore().Name, Is.EqualTo("Anna"));
+
+        stats.People = peopleList2;
+        Assert.That(stats.GetPersonWithHighestScore().Name, Is.EqualTo("Cecil"));
     }
 
     [Test]
-    public void TestAverageScoreOfStudents()
+    public void GetAverageScoreOfStudents_TwoDifferentLists()
     {
-        var stats = new PersonStatistics(GetSamplePeople());
-        Assert.AreEqual(61.67, stats.GetAverageScoreOfStudents(), 0.2);
+        var stats = new PersonStatistics(peopleList1);
+        Assert.That(stats.GetAverageScoreOfStudents(), Is.EqualTo(80));
+
+        stats.People = peopleList2;
+        Assert.That(stats.GetAverageScoreOfStudents(), Is.EqualTo(60));
     }
 
     [Test]
-    public void TestOldestStudent()
+    public void GetOldestStudent_TwoDifferentLists()
     {
-        var stats = new PersonStatistics(GetSamplePeople());
-        Assert.AreEqual("Emma", stats.GetOldestStudent().Name);
+        var stats = new PersonStatistics(peopleList1);
+        Assert.That(stats.GetOldestStudent().Name, Is.EqualTo("Anna"));
+
+        stats.People = peopleList2;
+        Assert.That(stats.GetOldestStudent().Name, Is.EqualTo("Dani"));
     }
 
     [Test]
-    public void TestIsAnyoneFailing()
+    public void IsAnyoneFailing_TwoDifferentLists()
     {
-        var stats = new PersonStatistics(GetSamplePeople());
-        Assert.IsTrue(stats.IsAnyoneFailing());
-    }
+        var stats = new PersonStatistics(peopleList1);
+        Assert.That(stats.IsAnyoneFailing(), Is.False);
 
-    [Test]
-    public void TestSetterReplacesList()
-    {
-        var stats = new PersonStatistics(new List<Person>());
-        stats.People = new List<Person>
-        {
-            new Person(1, "Zoli", 50, false, 10)
-        };
-
-        Assert.IsTrue(stats.IsAnyoneFailing());
-        Assert.AreEqual(50, stats.GetAverageAge());
+        stats.People = peopleList2;
+        Assert.That(stats.IsAnyoneFailing(), Is.True);
     }
 }
